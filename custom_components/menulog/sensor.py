@@ -99,7 +99,7 @@ class MenulogDeliveriesSensor(Entity):
         if self._api.check_auth():
             _LOGGER.debug('Fetching deliveries')
             response = self._api.get_deliveries()
-            if response['orders'] and response['orders'][0]:
+            if 'orders' in response and response['orders'][0]:
                 _LOGGER.debug(response['orders'][0])
                 
                 order = response['orders'][0]
@@ -116,6 +116,8 @@ class MenulogDeliveriesSensor(Entity):
                     self._state = "On its way"
                 elif order['status']['value'] == "DriverArrivingAtCustomer":
                     self._state = "Driver arriving at customer"
+                elif order['status']['value'] == "Delivered":
+                    self._state = "Delivered"
                 elif order['status']['value'] == "Completed":
                     self._state = "Completed"
                 else:
